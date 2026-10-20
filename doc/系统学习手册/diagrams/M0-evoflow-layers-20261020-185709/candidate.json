@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "EvoFlow M0：源码分层与 Runtime Port",
+    "output": "doc/系统学习手册/diagrams/M0-evoflow-layers-20261020-185709/M0-evoflow-layers.html",
+    "quality_profile": "showcase",
+    "locale": "zh-CN",
+    "repository": {
+      "url": "https://github.com/EvovexAI/EvoFlow.git",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "b9def02fc84d21a4e38f422e8e66525d481dfd5d"
+    }
+  },
+  "components": [
+    {
+      "id": "user",
+      "type": "external",
+      "label": "用户",
+      "sublabel": "Web / Desktop",
+      "pos": [40, 300],
+      "size": [130, 64]
+    },
+    {
+      "id": "panel",
+      "type": "frontend",
+      "label": "EvoPanel",
+      "sublabel": "Vue · Web / Tauri",
+      "pos": [220, 300],
+      "size": [160, 70],
+      "sources": [
+        { "path": "evopanel/src/main.js", "line": 2, "end_line": 18 },
+        { "path": "evopanel/src/lib/tauri-api.js", "line": 31, "end_line": 64 },
+        { "path": "evopanel/package.json", "line": 24, "end_line": 34 }
+      ]
+    },
+    {
+      "id": "gateway",
+      "type": "backend",
+      "label": "Gateway 应用层",
+      "sublabel": "backend/app/gateway",
+      "pos": [560, 300],
+      "size": [190, 76],
+      "sources": [
+        { "path": "backend/ARCHITECTURE.md", "line": 11, "end_line": 24 },
+        { "path": "backend/app/gateway/app.py", "line": 142, "end_line": 148 },
+        { "path": "backend/app/gateway/router_registry.py", "line": 62, "end_line": 80 }
+      ]
+    },
+    {
+      "id": "core",
+      "type": "backend",
+      "label": "EvoFlow 核心",
+      "sublabel": "packages/harness/evoflow",
+      "pos": [870, 300],
+      "size": [190, 76],
+      "sources": [
+        { "path": "backend/ARCHITECTURE.md", "line": 15, "end_line": 30 },
+        { "path": "backend/packages/harness/evoflow/runtime/ports.py", "line": 1, "end_line": 16 }
+      ]
+    },
+    {
+      "id": "sqlite",
+      "type": "database",
+      "label": "SQLite 持久化",
+      "sublabel": "共享数据库访问层",
+      "pos": [870, 510],
+      "size": [190, 68],
+      "sources": [
+        { "path": "backend/packages/harness/evoflow/persistence/db.py", "line": 1, "end_line": 27 }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "应用层 · HTTP / SSE / Channels",
+      "wraps": ["gateway"]
+    },
+    {
+      "kind": "region",
+      "label": "核心层 · 域逻辑与持久化",
+      "wraps": ["core", "sqlite"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "user-panel",
+      "from": "user",
+      "to": "panel",
+      "label": "交互",
+      "variant": "emphasis"
+    },
+    {
+      "id": "panel-gateway",
+      "from": "panel",
+      "to": "gateway",
+      "label": "Web API / Tauri transport",
+      "variant": "default"
+    },
+    {
+      "id": "gateway-core",
+      "from": "gateway",
+      "to": "core",
+      "label": "调用核心",
+      "variant": "emphasis"
+    },
+    {
+      "id": "core-gateway-port",
+      "from": "core",
+      "to": "gateway",
+      "label": "Runtime Port → 启动时注册的适配器",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "top",
+      "via": [[965, 190], [655, 190]]
+    },
+    {
+      "id": "core-sqlite",
+      "from": "core",
+      "to": "sqlite",
+      "label": "共享 SQLite 访问",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "分层职责",
+      "items": [
+        "应用层承载 Gateway HTTP、SSE 与渠道入口",
+        "核心层持有域逻辑与持久化能力",
+        "应用层可以导入核心层，核心层不应直接依赖应用层"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Runtime Port 桥接",
+      "items": [
+        "核心定义 runtime port 接口",
+        "Gateway 启动时注册应用侧适配器",
+        "这是核心回调应用能力的获准桥接方式"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "阅读边界",
+      "items": [
+        "R1 规则仍有历史遗留例外，不能假定当前零违规",
+        "按当前源码 commit 阅读：b9def02fc84d21a4e38f422e8e66525d481dfd5d"
+      ]
+    }
+  ]
+}
