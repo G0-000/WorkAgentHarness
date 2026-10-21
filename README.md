@@ -1,23 +1,12 @@
 # WorkAgentHarness
 
-以 EvoFlow 源码为教材的第二次系统学习项目。目标是在本仓库中按 M0–M8 从基础闭环逐步实现 EvoFlow 固定快照内适用的一方能力。
+EvoFlow 是第二次学习的源码教材；AgentFlow 是第一遍复盘样本；WorkAgentHarness 是重新理解、实验和实现的仓库。新学习体系按功能组织，不再沿用 M0–M8 作为课程章节。
 
-## 三个仓库的关系
+- [总规划](doc/系统学习路线-总规划.md)
+- [功能手册](doc/学习手册/README.md)
+- [功能地图](doc/学习手册/功能地图.md)
+- [唯一活功能清单](doc/学习手册/功能清单.md)
+- [最终验收](doc/学习手册/最终验收.md)
+- [EvoFlow 运行架构图](doc/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.html)
 
-- **EvoFlow**：源码事实来源，当前参照 `v1.1.2` / `b9def02fc84d21a4e38f422e8e66525d481dfd5d`。
-- **AgentFlow**：第一次学习的代码与文档，参照 `d39429698752ce01770896c2be887d2ca952cb2b`；用于复盘设计得失，不作为本项目现状或完整度标准。
-- **WorkAgentHarness**：第二次学习的实现目标。初始提交仅有 README 和 `.gitignore`；目前已在工作区加入学习文档，仍无后端/前端/测试实现，从 M0 重新开始。
-
-## 学习入口
-
-1. [系统学习路线总规划](doc/系统学习路线-总规划.md)
-2. [分章学习手册](doc/系统学习手册/README.md)
-3. [M0 环境、架构与源码地图](doc/系统学习手册/M0-环境架构源码地图.md)
-4. [全量功能矩阵](doc/系统学习手册/02-全量功能矩阵.md)
-
-## 当前进度
-
-**M0：盘点中。** 已锁定三方 commit、确认 EvoFlow app/core 边界并完成首张源码分层图；下一步盘点全量功能入口、确定 WorkAgentHarness 工程边界并建立逐功能矩阵。M0 未完成前不复制 AgentFlow 的代码骨架，也不将任何能力标记为已实现。
-
-- [M0 仓库与环境快照](doc/学习记录/M0/00-仓库与环境快照.md)
-- [M0 EvoFlow 分层源码阅读](doc/学习记录/M0/01-EvoFlow分层源码阅读.md)
+源码基准：EvoFlow 62a4117ceff4626213ad434eae6b311bcc3bcfe1；AgentFlow 第一遍历史参照：d39429698752ce01770896c2be887d2ca952cb2b。先从对话运行时或感兴趣的用户场景开始，逐项由基础实验走到完整能力。复用、发布上游代码前核对 LICENSE、NOTICE 和第三方许可。

@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "EvoFlow：用户请求到 Agent 运行时",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "doc/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.html",
+    "repository": {
+      "url": "https://github.com/EvovexAI/EvoFlow.git",
+      "revision": "62a4117ceff4626213ad434eae6b311bcc3bcfe1",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "components": [
+    {
+      "id": "user",
+      "type": "external",
+      "label": "用户",
+      "sublabel": "Web / 桌面",
+      "pos": [
+        40,
+        240
+      ],
+      "size": [
+        120,
+        64
+      ]
+    },
+    {
+      "id": "panel",
+      "type": "frontend",
+      "label": "EvoPanel",
+      "sublabel": "聊天与控制界面",
+      "pos": [
+        235,
+        240
+      ],
+      "size": [
+        145,
+        68
+      ],
+      "sources": [
+        {
+          "path": "evopanel/src/react/ChatApp.tsx",
+          "line": 7541,
+          "end_line": 7547,
+          "label": "获取模型配置"
+        }
+      ]
+    },
+    {
+      "id": "gateway",
+      "type": "backend",
+      "label": "Gateway",
+      "sublabel": "FastAPI / HTTP / SSE",
+      "pos": [
+        455,
+        240
+      ],
+      "size": [
+        155,
+        68
+      ],
+      "sources": [
+        {
+          "path": "backend/app/gateway/routers/langgraph_proxy.py",
+          "line": 21,
+          "end_line": 28,
+          "label": "LangGraph proxy"
+        },
+        {
+          "path": "backend/app/gateway/routers/langgraph_proxy.py",
+          "line": 483,
+          "end_line": 510,
+          "label": "上游 HTTP stream"
+        },
+        {
+          "path": "backend/app/gateway/routers/langgraph_proxy.py",
+          "line": 620,
+          "end_line": 627,
+          "label": "SSE 返回"
+        }
+      ]
+    },
+    {
+      "id": "runtime",
+      "type": "backend",
+      "label": "LangGraph Runtime",
+      "sublabel": "lead_agent 图入口",
+      "pos": [
+        760,
+        240
+      ],
+      "size": [
+        165,
+        68
+      ],
+      "sources": [
+        {
+          "path": "backend/langgraph.json",
+          "line": 8,
+          "end_line": 14,
+          "label": "图与 checkpointer 注册"
+        }
+      ]
+    },
+    {
+      "id": "agent",
+      "type": "backend",
+      "label": "Lead Agent",
+      "sublabel": "模型 + 工具 + middleware",
+      "pos": [
+        1050,
+        240
+      ],
+      "size": [
+        165,
+        68
+      ],
+      "sources": [
+        {
+          "path": "backend/packages/harness/evoflow/agents/lead_agent/agent.py",
+          "line": 968,
+          "end_line": 974,
+          "label": "Agent factory"
+        },
+        {
+          "path": "backend/packages/harness/evoflow/agents/lead_agent/agent.py",
+          "line": 1364,
+          "end_line": 1374,
+          "label": "模型、工具和 middleware"
+        }
+      ]
+    },
+    {
+      "id": "model",
+      "type": "cloud",
+      "label": "Chat Model",
+      "sublabel": "按配置创建 provider",
+      "pos": [
+        1050,
+        80
+      ],
+      "size": [
+        165,
+        68
+      ],
+      "sources": [
+        {
+          "path": "backend/packages/harness/evoflow/models/factory.py",
+          "line": 826,
+          "end_line": 860,
+          "label": "provider factory"
+        }
+      ]
+    },
+    {
+      "id": "checkpointer",
+      "type": "database",
+      "label": "Checkpointer",
+      "sublabel": "memory / SQLite / Postgres",
+      "pos": [
+        1050,
+        400
+      ],
+      "size": [
+        165,
+        68
+      ],
+      "sources": [
+        {
+          "path": "backend/packages/harness/evoflow/agents/checkpointer/async_provider.py",
+          "line": 54,
+          "end_line": 91,
+          "label": "后端选择与资源管理"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "应用层 · backend/app",
+      "wraps": [
+        "gateway"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "核心运行时 · backend/packages/harness/evoflow",
+      "wraps": [
+        "agent",
+        "model",
+        "checkpointer"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "user-panel",
+      "from": "user",
+      "to": "panel",
+      "label": "输入任务"
+    },
+    {
+      "id": "panel-gateway",
+      "from": "panel",
+      "to": "gateway",
+      "label": "HTTP API",
+      "variant": "emphasis"
+    },
+    {
+      "id": "gateway-runtime",
+      "from": "gateway",
+      "to": "runtime",
+      "label": "转发 LangGraph 请求与 SSE",
+      "variant": "emphasis"
+    },
+    {
+      "id": "runtime-agent",
+      "from": "runtime",
+      "to": "agent",
+      "label": "lead_agent 注册入口"
+    },
+    {
+      "id": "agent-model",
+      "from": "agent",
+      "to": "model",
+      "label": "创建模型实例",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "agent-state",
+      "from": "agent",
+      "to": "checkpointer",
+      "label": "线程状态 checkpoint",
+      "fromSide": "bottom",
+      "toSide": "top"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "阅读提示",
+      "items": [
+        "Gateway 是应用入口；Lead Agent 属于核心运行时。",
+        "LangGraph 图配置声明 Agent 工厂和 checkpointer。",
+        "模型和 checkpoint 后端可配置，不是固定单一服务。"
+      ]
+    }
+  ]
+}
