@@ -5,7 +5,7 @@
     "title": "EvoFlow：用户请求到 Agent 运行时",
     "locale": "zh-CN",
     "quality_profile": "showcase",
-    "output": "doc/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.html",
+    "output": "doc/dev/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.html",
     "repository": {
       "url": "https://github.com/EvovexAI/EvoFlow.git",
       "revision": "62a4117ceff4626213ad434eae6b311bcc3bcfe1",

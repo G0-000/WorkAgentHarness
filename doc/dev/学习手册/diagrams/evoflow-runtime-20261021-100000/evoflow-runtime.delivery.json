@@ -4,8 +4,8 @@
   "status": "current",
   "command": "deliver",
   "type": "architecture",
-  "input": "/Users/main/WorkAgentHarness/doc/学习手册/diagrams/evoflow-runtime-20261021-100000/candidate.json",
-  "output": "/Users/main/WorkAgentHarness/doc/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.html",
+  "input": "/Users/main/WorkAgentHarness/doc/dev/学习手册/diagrams/evoflow-runtime-20261021-100000/candidate.json",
+  "output": "/Users/main/WorkAgentHarness/doc/dev/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.html",
   "specification": {
     "sha256": "94b04296137cfedbd9eed98e5ac215cbdb20a9261986809236452d7fcbe394f9",
     "bytes": 5504

@@ -6,12 +6,12 @@
   "type": "architecture",
   "quality": "showcase",
   "specification": {
-    "path": "/Users/main/WorkAgentHarness/doc/学习手册/diagrams/evoflow-runtime-20261021-100000/candidate.json",
+    "path": "/Users/main/WorkAgentHarness/doc/dev/学习手册/diagrams/evoflow-runtime-20261021-100000/candidate.json",
     "sha256": "94b04296137cfedbd9eed98e5ac215cbdb20a9261986809236452d7fcbe394f9",
     "bytes": 5504
   },
   "artifact": {
-    "path": "/Users/main/WorkAgentHarness/doc/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.html",
+    "path": "/Users/main/WorkAgentHarness/doc/dev/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.html",
     "sha256": "42d3bd8324dded732c879aa80030c7e9b2eab28a7c0d2d796aaf3ba6d06d9341",
     "bytes": 759742
   },
@@ -28,9 +28,9 @@
     "truncated": false
   },
   "evidence": {
-    "receipt": "/Users/main/WorkAgentHarness/doc/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.finalize.json",
-    "summaryReceipt": "/Users/main/WorkAgentHarness/doc/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.finalize-summary.json",
-    "browserCheckReceipt": "/Users/main/WorkAgentHarness/doc/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.browser-check.json"
+    "receipt": "/Users/main/WorkAgentHarness/doc/dev/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.finalize.json",
+    "summaryReceipt": "/Users/main/WorkAgentHarness/doc/dev/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.finalize-summary.json",
+    "browserCheckReceipt": "/Users/main/WorkAgentHarness/doc/dev/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.browser-check.json"
   },
   "update": {
     "status": "update_available",
