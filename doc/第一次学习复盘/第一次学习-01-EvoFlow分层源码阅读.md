@@ -2,7 +2,7 @@
 
 阅读日期：2026-10-20。源码快照：EvoFlow `v1.1.2` / `b9def02fc84d21a4e38f422e8e66525d481dfd5d`。本记录用于 WorkAgentHarness 第二次学习；AgentFlow 是第一遍实现的复盘样本，不是当前目标仓库。
 
-架构图：[EvoFlow M0：源码分层与 Runtime Port](../../系统学习手册/diagrams/M0-evoflow-layers-20261020-185709/M0-evoflow-layers.html)。图的每个关键节点都带有 EvoFlow 源码证据。Archify 的 showcase 校验、严格检查、浏览器检查均通过；另生成 1440×900 和 2048×1320 的亮/暗主题预览并检查了 1440×900 亮色图，Runtime Port 回连路由清楚，没有遮挡主调用链。
+架构图：[EvoFlow M0：源码分层与 Runtime Port](diagrams/M0-evoflow-layers-20261020-185709/M0-evoflow-layers.html)。图的每个关键节点都带有 EvoFlow 源码证据。Archify 的 showcase 校验、严格检查、浏览器检查均通过；另生成 1440×900 和 2048×1320 的亮/暗主题预览并检查了 1440×900 亮色图，Runtime Port 回连路由清楚，没有遮挡主调用链。
 
 ## 已核实的源码事实
 
