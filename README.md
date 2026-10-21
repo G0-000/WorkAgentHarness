@@ -5,6 +5,8 @@ EvoFlow 是第二次学习的源码教材；AgentFlow 是第一遍复盘样本�
 - [总规划](doc/系统学习路线-总规划.md)
 - [功能手册](doc/学习手册/README.md)
 - [功能地图](doc/学习手册/功能地图.md)
+- [功能单元路线](doc/学习手册/功能单元路线.md)
+- [AgentFlow 第一遍复盘索引](doc/第一次学习复盘.md)
 - [唯一活功能清单](doc/学习手册/功能清单.md)
 - [最终验收](doc/学习手册/最终验收.md)
 - [EvoFlow 运行架构图](doc/学习手册/diagrams/evoflow-runtime-20261021-100000/evoflow-runtime.html)
