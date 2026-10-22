@@ -1,6 +1,6 @@
 # EvoFlow 分层源码阅读
 
-基准 commit 62a4117ceff4626213ad434eae6b311bcc3bcfe1。此页仅导航；逐项补真实 caller、符号和测试。
+基准 commit `87a957720b74c7e68b0e22fab9c79a9291f62b17`。此页仅导航；逐项补真实 caller、符号和测试。完整产品和源码检查面见[功能全景盘点](../../学习手册/EvoFlow功能全景盘点.md)，按篇章学习见[课程目录](../../学习手册/课程目录.md)。
 
 入口：CLI 位于 backend/packages/harness/evoflow/cli/；HTTP、SSE、v4、speech 在 backend/app/gateway/；IM 位于 backend/app/channels/；app server 在 evoflow/app_server/；Web/桌面位于 evopanel/src/，包括 zcode-ui、zcode-services、zcode-shared、zcode-rpc 和 zcode-provider。
 
