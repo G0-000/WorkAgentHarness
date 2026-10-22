@@ -1,0 +1,15 @@
+# 默认使用 fake provider，首次运行不需要网络或 API key。
+models:
+  chat:
+    provider: fake
+    model: tutorial-fake
+    temperature: 0
+
+# 切换真实 provider 时设置 WORKAGENT_MODEL_API_KEY 环境变量，并改为：
+# models:
+#   chat:
+#     provider: openai-compatible
+#     model: <服务商提供的模型名>
+#     base_url: <OpenAI 兼容 API 地址>
+#     api_key: ${WORKAGENT_MODEL_API_KEY}
+#     temperature: 0.2

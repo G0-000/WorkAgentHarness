@@ -1,0 +1,23 @@
+[project]
+name = "workagentharness"
+version = "0.1.0"
+description = "WorkAgentHarness learning implementation"
+requires-python = ">=3.12"
+dependencies = [
+    "langchain>=1.2.3",
+    "langchain-openai>=1.1.7",
+    "langgraph>=1.0.6,<1.0.10",
+    "langgraph-checkpoint-sqlite>=3.0.3",
+    "pydantic>=2.12.5",
+    "pyyaml>=6.0.3",
+]
+
+[project.scripts]
+workagentharness = "workagentharness.cli.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["workagentharness"]
