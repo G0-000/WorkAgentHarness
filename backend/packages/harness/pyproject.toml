@@ -4,11 +4,22 @@ version = "0.1.0"
 description = "WorkAgentHarness learning implementation"
 requires-python = ">=3.12"
 dependencies = [
+    # Agent 构造与 LLM 抽象基类：agents/lead_agent、models/factory
     "langchain>=1.2.3",
+    # OpenAI 兼容 provider 实现：models/factory.py → ChatOpenAI
     "langchain-openai>=1.1.7",
+    # 图运行时与 Checkpoint 基类：agents/lead_agent、agents/checkpointer
     "langgraph>=1.0.6,<1.0.10",
+    # ReAct Agent 预构建节点；严格锁 1.0.8 与 langgraph 1.0.9 对齐 EvoFlow 基线，
+    # 1.0.9+ 需要 langgraph.runtime 提供 ExecutionInfo/ServerInfo，当前 1.0.9 没有
+    "langgraph-prebuilt==1.0.8",
+    # 内存运行时后端，提供 store/queue/lifespan 等服务端能力
+    "langgraph-runtime-inmem>=0.22.1",
+    # SQLite Checkpoint 持久化：agents/checkpointer/provider.py → SqliteSaver
     "langgraph-checkpoint-sqlite>=3.0.3",
+    # langchain 生态间接依赖，后续配置校验会直接用到
     "pydantic>=2.12.5",
+    # YAML 配置文件解析：config/loader.py
     "pyyaml>=6.0.3",
 ]
 
