@@ -12,7 +12,10 @@ RunService 是核心用例层（application service）：
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from typing import Iterator
 from uuid import uuid4
+
+from workagentharness.events.stream import Event, stream_agent_run
 
 
 def _now_utc() -> str:
@@ -107,3 +110,58 @@ class RunService:
             error_code = type(exc).__name__
             self._runs.fail(run_id, error_code, _now_utc())
             return RunResult(run_id=run_id, status="failed", error_code=error_code)
+
+    def execute_stream(self, owner_id: str, session_id: str, text: str) -> Iterator[Event]:
+        """流式执行：边跑边发事件，同时保证与同步版一致的 run 生命周期。
+
+        与 execute 的区别只有一点：
+            execute 等 Agent 跑完再返回整段回答；
+            execute_stream 用生成器边收事件边 yield 给入口。
+
+        生命周期完全一致（都在同一个 try/except 里）：
+            run_start → 写 user 消息 → 逐个 yield 事件 → 写 assistant 消息
+            → run_end(completed)；异常 → run_end(failed)；Ctrl+C → cancelled。
+
+        参数与 execute 相同；产出的事件：
+            {"type": "run_start", "run_id", "thread_id"}
+            {"type": "text_delta", "text"}
+            {"type": "tool_call", "name", "args"}
+            {"type": "tool_result", "name", "ok"}
+            {"type": "run_end", "status", "answer" / "error_code"}
+        """
+        # 输入边界校验与同步版一致：空文本不建 run
+        if not text.strip():
+            raise ValueError("用户输入不能为空")
+
+        run_id = uuid4().hex
+        self._runs.start(run_id, session_id, owner_id, _now_utc())
+        yield {"type": "run_start", "run_id": run_id, "thread_id": session_id}
+
+        try:
+            # 1. 用户消息入库（失败会进入下面的 except，run 变成 failed）
+            self._sessions.add_message(session_id, "user", text)
+
+            # 2. 消费事件流，同时把文本增量拼起来当作最终回答
+            #    （流式下没有"最后一条消息"，只能靠拼接）
+            answer_parts: list[str] = []
+            for event in stream_agent_run(self._agent, [("user", text)], thread_id=session_id):
+                if event.get("type") == "text_delta":
+                    answer_parts.append(event.get("text", ""))
+                yield event
+
+            answer = "".join(answer_parts).strip()
+
+            # 3. 助手回答入库 + run 完成
+            self._sessions.add_message(session_id, "assistant", answer)
+            self._runs.complete(run_id, _now_utc())
+            yield {"type": "run_end", "status": "completed", "answer": answer}
+
+        except KeyboardInterrupt:
+            self._runs.cancel(run_id, _now_utc())
+            yield {"type": "run_end", "status": "cancelled"}
+            raise
+
+        except Exception as exc:  # noqa: BLE001 - 与同步版保持同一失败语义
+            error_code = type(exc).__name__
+            self._runs.fail(run_id, error_code, _now_utc())
+            yield {"type": "run_end", "status": "failed", "error_code": error_code}
