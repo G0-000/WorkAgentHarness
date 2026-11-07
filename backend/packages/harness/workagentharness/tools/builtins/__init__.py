@@ -9,12 +9,14 @@
 from __future__ import annotations
 
 from ..catalog import ToolCatalog
+from ..host_direct import terminal_tool
 from .calculator import calculator, safe_eval
 from .workspace_file import list_directory, read_text_file, resolve_in_workspace
 
 __all__ = [
     "calculator",
     "safe_eval",
+    "terminal_tool",
     "read_text_file",
     "list_directory",
     "resolve_in_workspace",
@@ -33,4 +35,6 @@ def default_catalog() -> ToolCatalog:
     catalog.register(calculator, tier="core", aliases=("calc", "math"))
     catalog.register(read_text_file, tier="workspace", aliases=("read_file",))
     catalog.register(list_directory, tier="workspace", aliases=("ls",))
+    # 宿主终端：有副作用，单独一层 host，方便以后按 tier 做白名单
+    catalog.register(terminal_tool, tier="host", aliases=("shell", "bash", "term"))
     return catalog

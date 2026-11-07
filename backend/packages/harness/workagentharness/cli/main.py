@@ -22,6 +22,7 @@ from workagentharness.agents.lead_agent.agent import make_lead_agent
 from workagentharness.app_server.stdio_rpc import serve_stdio
 from workagentharness.config.loader import load_chat_model_config
 from workagentharness.execution.run_service import RunService
+from workagentharness.events.sse import EventBuffer, sse_event_stream
 from workagentharness.middleware import ToolAuditMiddleware
 from workagentharness.models.factory import create_chat_model
 from workagentharness.persistence.db import open_database
@@ -43,6 +44,8 @@ def main() -> None:
                         help="发送一条消息后立即退出（脚本化/自动化用）")
     parser.add_argument("--stream", action="store_true",
                         help="流式输出事件（第 10 章）：逐条打印文本增量与工具活动")
+    parser.add_argument("--sse", action="store_true",
+                        help="把事件按 SSE 格式打印（第 10.2 节）；可与 --stream 互换")
     parser.add_argument("--mode", choices=("cli", "app-server"), default="cli",
                         help="cli=交互终端；app-server=教学用 stdio JSON-RPC 子集")
     args = parser.parse_args()
@@ -93,7 +96,9 @@ def main() -> None:
 
         # --once 模式：执行一次就退出（适合脚本调用和自动化测试）
         if args.once is not None:
-            if args.stream:
+            if args.sse:
+                _execute_sse_and_print(service, owner_id, session_id, args.once)
+            elif args.stream:
                 _execute_stream_and_print(service, owner_id, session_id, args.once)
             else:
                 _execute_and_print(service, owner_id, session_id, args.once)
@@ -110,7 +115,9 @@ def main() -> None:
                 break
             if not text:           # 空输入直接跳过，不触发模型调用
                 continue
-            if args.stream:
+            if args.sse:
+                _execute_sse_and_print(service, owner_id, session_id, text)
+            elif args.stream:
                 _execute_stream_and_print(service, owner_id, session_id, text)
             else:
                 _execute_and_print(service, owner_id, session_id, text)
@@ -166,6 +173,21 @@ def _execute_stream_and_print(
                 print("\n运行已取消")
             else:
                 print(f"\n运行失败 ({event.get('error_code')})")
+
+
+def _execute_sse_and_print(
+    service: RunService, owner_id: str, session_id: str, text: str
+) -> None:
+    """把事件按 SSE 文本打印（第 10.2 节的 SSE 消费方）。
+
+    与 ``_execute_stream_and_print`` 共用同一套事件，只换编码：
+    终端看"打字机"，SSE 看"协议帧"。要接 HTTP 时，把这里的 print
+    换成 ``StreamingResponse`` 的 yield 即可，事件结构不动。
+    """
+    buffer = EventBuffer()
+    for chunk in sse_event_stream(service.execute_stream(owner_id, session_id, text), buffer=buffer):
+        # SSE 帧本身以空行结束，这里再补一个分隔便于终端观察
+        print(chunk, end="" if chunk.endswith("\n\n") else "\n")
 
 
 if __name__ == "__main__":
