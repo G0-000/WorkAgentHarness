@@ -30,6 +30,8 @@ default_catalog()
 | `calculator` | 无副作用，最适合验证"模型 → 工具 → 结果回传"闭环 | 低（纯计算） |
 | `read_text_file` / `list_directory` | 只读 + 边界校验，演示宿主边界且不引入写风险 | 低（只读） |
 
+**来源标注**：这四个工具都是本项目自造，EvoFlow 无同名符号——算术走 `code_execution_tool.py`，文件能力拆在 `host_direct/read_file.py`、`list_dir.py` 等文件里。见 [台账 · 八](../../../dev/学习教程册/EvoFlow对照台账与差异建议.md)。
+
 写文件、执行命令、浏览器控制属于高风险面，需要额外治理（审批、白名单、超时），本篇先不做。
 
 ## 新增工具步骤

@@ -162,7 +162,14 @@ def _check_dangerous(command: str) -> str | None:
 
 
 def _resolve_cwd(workdir: str | None) -> Path | None:
-    """把 workdir 解析成绝对路径；空值返回 None（用当前目录）。"""
+    """把 workdir 解析成绝对路径；空值返回 None（用当前目录）。
+
+    与原版的关系：EvoFlow **没有**这个私有函数。它对应
+    ``workspace_path_guard.resolve_tool_workdir(workdir, runtime=...)``（terminal_tool.py:32
+    导入、:627 调用），那个函数除了归一化路径，还要处理 ``skill:<name>`` 前缀和 runtime
+    里的工作区根目录。本项目没有 workspace_path_guard 模块，所以内联成一个最小实现，
+    函数名也是本项目自造的（台账第八节登记）。
+    """
     if not workdir:
         return None
     target = Path(workdir).expanduser()

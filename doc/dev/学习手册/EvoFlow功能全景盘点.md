@@ -4,42 +4,47 @@
 
 ## 基准快照和盘点范围
 
-当前本地 EvoFlow `main` 与 `origin/main` 同步，快照为 `87a957720b74c7e68b0e22fab9c79a9291f62b17`；AgentFlow 第一遍基线为 `d39429698752ce01770896c2be887d2ca952cb2b`；WorkAgentHarness 当前基线请在开章时运行 `git rev-parse HEAD`。课程和清点记录必须标注当时 commit。
+本轮教材目标快照为 EvoFlow `8e462a37ba584c17feffa8c1bb22c3b53d98a057`（2026-11-10 核对，工作区干净）。上一轮 `1e393d9dfba964c70515c9a9f58537ac1e9b655e` 是前三篇既有实现/验收证据的历史基准，不再代表最新教材。AgentFlow 第一遍基线为 `d39429698752ce01770896c2be887d2ca952cb2b`；WorkAgentHarness 当前基线每次开章运行 `git rev-parse HEAD`。课程和清点记录必须标注当时 commit。
 
 EvoFlow 根目录未找到 AGENTS 指引中提到的 `.codebasewiki/index/index.md` 和 `architecture.md`。本次源码导航改用仓库根 `README.md`、`backend/ARCHITECTURE.md`、用户文档、实际入口/注册、测试和运行时调用链。缺少知识库索引作为资料缺口登记，不用旧图上的行号替代当前证据。
 
 本地快照需逐项检查的范围：
 
-1. `backend/packages/harness/evoflow/`：51 个一级核心包。
-2. `backend/app/gateway/`：73 个 Python 路由模块（含内部自检和包入口）；应用层另有事件、流式、语音、v4、依赖和启动装配。
-3. `backend/app/channels/`：25 个渠道及 bus/manager/service/model 文件。
-4. `evopanel/src/`、`evopanel/src-tauri/`、`evopanel/e2e/`：Web 页面、React/ZCode、桌面 IPC/权限和端到端场景。
+1. `backend/packages/harness/evoflow/`：**71 个顶层条目** = 51 个包目录 + 20 个顶层文件。其中 `__init__.py`、`timeutil.py`、若干 langgraph 补丁脚本等不是用户功能项；`person_kernel.py`、`person_affect.py`、`person_wrap_up_reflect.py` 是**顶层文件**（人格内核），不属于任何包目录，只在按包盘点时会漏掉。
+2. `backend/app/gateway/routers/`：**77 个 Python 文件**，其中含 `__init__.py`、`_tools_selftest.py` 等非路由文件。**77 是文件数，不是功能数**；新加 `ui_ext_apps.py`，实际路由能力按 `APIRouter`/`@router.` 装饰器逐个核。
+3. `backend/app/channels/`：**33 个条目** = 29 个顶层 `.py` + 2 个非 py 文件（`FEISHU_REQUIREMENTS.md`、`WEIXIN_REQUIREMENTS.md`）+ 2 个子目录（`models/`、`services/`）。差额即文档与配置，不能算作渠道实现。
+4. `evopanel/`：**969 个 `.tsx`/`.vue` 文件**，`src/pages` 96 个文件；页面入口数仍须按 `src/router.js` 注册表逐项复核，不能沿用旧文件量推断路由数。**文件量不等于页面或功能数**；另有 `index.html`、`agent-trace.html`、`cua-glow-overlay.html` 三个独立入口 html。
 5. `skills/`、`docker/`、`backend/packaging/`、`scripts/`、`docs/user/`：随产品提供的技能、部署/打包、运维工具和用户行为说明。
 
 文件数量只用于说明本次检查面和重复执行清点；每个新快照应重跑清点。数量不代表功能完成度，也不能直接作为章节数。
+
+### `1e393d9` → `8e462a37` 增量复核
+
+该增量共 **326 个文件变化（+19,269 / −1,465 行）**。新增用户可观察范围及章节映射见[规划与快照更新规则](规划与快照更新规则.md)本轮差异表。特别纳入：内置 UI Extension App（第 40/56 章）、child-work/session runtime 生命周期（第 24/32/55/57 章）、按模块用量和提示词开销（第 51 章）、Codex 模型和 Aliyun Token Plan（第 3/30 章）。其余行为变更分配到既有章节；文件清点不能代替逐 caller 核实。
 
 ## 从用户行为看完整产品
 
 | 产品功能域 | 用户能做什么 | 课程篇章 | 主要功能 ID |
 |---|---|---|---|
-| 启动、配置和对话 | 配模型/凭证，开始和继续多轮对话，查看回复 | 第一篇 | `WAH-RUN-001–009` |
-| 工具执行和结果交付 | 让 Agent 发现/调用工具，流式查看进度，恢复中断结果 | 第二篇 | `WAH-TOOL-001–009`、`WAH-API-002`、`WAH-UI-002/004` |
-| 上下文、记忆和资产 | 跨轮次带入上下文、维护记忆与资产/产物 | 第三篇 | `WAH-MEM-001–008` |
-| 文档知识和代码索引 | 上传、检索、引用文档，检索代码符号 | 第四篇 | `WAH-KNOW-001–007` |
-| 委派和受限执行 | 子代理执行任务，在 sandbox/审批/权限下操作 | 第五篇 | `WAH-EXEC-001–007`、`WAH-GOV-008` |
-| 计划与长任务 | Plan/Goal、协作账本、Workflow、探索、暂停恢复 | 第六篇 | `WAH-PLAN-001–009` |
-| 自动化和主动运行 | 定时执行、Heartbeat、主动任务和通知 | 第七篇 | `WAH-AUTO-001–006` |
-| 扩展生态 | MCP、插件、Skills、社区 Provider、外部 Agent/A2A | 第八篇 | `WAH-EXT-001–010` |
-| API、消息渠道和宿主 | HTTP/SSE、v4/语音、IM 渠道、本地 App Server | 第九篇 | `WAH-API-001–009` |
-| 身份、安全、运维 | 身份与 ACL、组织/许可、审批、Trace/Eval | 第十篇 | `WAH-GOV-001–008`、`WAH-OBS-001–006` |
-| 完整用户产品 | Web/Desktop、ZCode、设置、任务和语音操作 | 第十一篇 | `WAH-UI-001–011` |
-| 集成及快照覆盖 | 上述能力从真实入口协作，完成差异收口 | 第十二篇 | 引用全部适用 ID，不新增重复 ID |
+| 导学 | 认识仓库结构、源码快照与许可边界 | 第 1 篇 | `—` |
+| 启动、配置和对话 | 配模型/凭证，开始和继续多轮对话，查看回复 | 第 2 篇 | `WAH-RUN-001–009、WAH-RUN-011` |
+| 工具执行和结果交付 | 让 Agent 发现/调用工具，流式查看进度，恢复中断结果 | 第 3 篇 | `WAH-TOOL-001–009`、`WAH-API-002`、`WAH-UI-002/004` |
+| 上下文、记忆和资产 | 跨轮次带入上下文、维护记忆与资产/产物 | 第 4 篇 | `WAH-MEM-001–008` |
+| 文档知识和代码索引 | 上传、检索、引用文档，检索代码符号 | 第 5 篇 | `WAH-KNOW-001–007` |
+| 委派和受限执行 | 子代理执行任务，在 sandbox/审批/权限下操作 | 第 6 篇 | `WAH-EXEC-001–008`、`WAH-GOV-008` |
+| 计划与长任务 | Plan/Goal、协作账本、Workflow、探索、暂停恢复 | 第 7 篇 | `WAH-PLAN-001–009、WAH-PLAN-012–013` |
+| 自动化和主动运行 | 定时执行、Heartbeat、主动任务和通知 | 第 8 篇 | `WAH-AUTO-001–006` |
+| 扩展生态 | MCP、插件、Skills、社区 Provider、外部 Agent/A2A | 第 9 篇 | `WAH-EXT-001–012` |
+| API、消息渠道和宿主 | HTTP/SSE、v4/语音、IM 渠道、本地 App Server | 第 10 篇 | `WAH-API-001–009` |
+| 身份、安全、运维和人格 | 身份与 ACL、组织/许可、审批、Trace/Eval、员工人格与成长 | 第 11 篇 | `WAH-GOV-001–009`、`WAH-OBS-001–006、WAH-OBS-008`、`WAH-PERSON-001–012` |
+| 完整用户产品 | Web/Desktop、ZCode、设置、任务和语音操作 | 第 12 篇 | `WAH-UI-001–012` |
+| 集成及快照覆盖 | 上述能力从真实入口协作，完成差异收口 | 第 13 篇 | 引用全部适用 ID，不新增重复 ID |
 
 这是产品行为导航，不表示所有目录中的实现都已经形成用户可见功能。逐个 ID 需要找真实 caller；找不到时应记录为内部支撑、孤立实现、未接线或待核实。
 
-## 51 个核心包如何进入课程
+## 核心包如何进入课程（71 个顶层条目）
 
-以下包清单按当前源码中的一级目录核对。子目录继续在对应章节按具体行为拆分；同一包可被多章引用，一个包不必然等于一个用户功能。
+以下包清单按当前源码中的 51 个一级目录核对；另有 20 个顶层文件（含人格内核三件）单列在下方，不并入任何包。子目录继续在对应章节按具体行为拆分；同一包可被多章引用，一个包不必然等于一个用户功能。
 
 | 功能群 | 核心包 | 课程归属和核对重点 |
 |---|---|---|
@@ -53,7 +58,20 @@ EvoFlow 根目录未找到 AGENTS 指引中提到的 `.codebasewiki/index/index.
 | 身份、组织与管理 | `authz`、`organizations`、`guardrails`、`license`、`admin`、`webui` | 第十篇；建立入口×身份×资源×动作保护矩阵，验证 UI/API 都受保护 |
 | 观测、诊断和评估 | `observability`、`debug`、`eval` | 第十篇；区分已存储日志与真实查询/展示的证据 |
 
-上表覆盖当前 51 个一级包：`a2a`、`admin`、`agents`、`app_server`、`artifacts`、`assets`、`authz`、`automation`、`cancellation`、`capability`、`cli`、`code_index`、`collab`、`community`、`config`、`context`、`core`、`debug`、`eval`、`execution_security`、`exploration`、`exploration_graph`、`external_agents`、`guardrails`、`items`、`knowledge`、`license`、`mcp`、`memory`、`models`、`observability`、`organizations`、`persistence`、`plans`、`platform`、`plugins`、`proactive`、`reflection`、`runtime`、`sandbox`、`scheduler`、`session_execution`、`session_tool_binding`、`skills`、`stage`、`subagents`、`tools`、`uploads`、`utils`、`webui`、`workflows`。
+上表覆盖当前 51 个包目录（71 个顶层条目中的目录部分）：`a2a`、`admin`、`agents`、`app_server`、`artifacts`、`assets`、`authz`、`automation`、`cancellation`、`capability`、`cli`、`code_index`、`collab`、`community`、`config`、`context`、`core`、`debug`、`eval`、`execution_security`、`exploration`、`exploration_graph`、`external_agents`、`guardrails`、`items`、`knowledge`、`license`、`mcp`、`memory`、`models`、`observability`、`organizations`、`persistence`、`plans`、`platform`、`plugins`、`proactive`、`reflection`、`runtime`、`sandbox`、`scheduler`、`session_execution`、`session_tool_binding`、`skills`、`stage`、`subagents`、`tools`、`uploads`、`utils`、`webui`、`workflows`。
+
+### 20 个顶层文件（不并入任何包）
+
+`ls -1 backend/packages/harness/evoflow/` 的 20 个文件项，按作用分四类：
+
+| 类别 | 文件 | 归属 |
+|---|---|---|
+| 包入口 | `__init__.py` | 非功能 |
+| **人格内核** | `person_kernel.py`（2028 行/49 函数）、`person_affect.py`（351 行/17 函数）、`person_wrap_up_reflect.py`（720 行/11 函数） | **`WAH-PERSON-001–012`，第 53 章** |
+| 运行时补丁与兼容 | `langchain_agenerate_cancel_patch.py`、`langgraph_api_command_patch.py`、`langgraph_cancellation_patch.py`、`langgraph_connectivity.py`、`langgraph_deployment.py`、`langgraph_run_config.py`、`langgraph_runtime_env.py`、`external_runtime_probe.py`、`session_concurrency_policy.py` | 横切支撑，按第 3、6、7 篇相关章节核 |
+| 客户端/桌面/网关桥接 | `client.py`、`desktop_stdio.py`、`gateway_http.py`、`claude_subagent_type.py`、`automation_toml_strings.py`、`error_classifier.py`、`timeutil.py` | 分属第 3、6、8、10 篇 |
+
+**这一节存在的理由**：只按"51 个包目录"盘点会漏掉人格内核三件——它们不在任何包目录里。上一版就是这样漏的。
 
 ## 应用层入口必须逐个查
 
@@ -71,7 +89,7 @@ meetings.py, memory.py, models.py, observability.py, openai_compat_apps.py, orga
 panel_settings.py, plans.py, platform.py, platform_config.py, plugins.py, runs.py,
 runtime_paths.py, security_settings.py, session_notifications.py, sessions.py, share.py,
 skills.py, speech.py, stage_news.py, stream_resume.py, suggestions.py, task_memory.py,
-tasks.py, threads.py, tool_approval_settings.py, tools.py, ui_extensions.py, uploads.py,
+tasks.py, threads.py, tool_approval_settings.py, tools.py, ui_extensions.py, ui_ext_apps.py, uploads.py,
 usage.py, web_search_settings.py, webui.py, workspaces.py
 ```
 
@@ -83,13 +101,13 @@ usage.py, web_search_settings.py, webui.py, workspaces.py
 
 | 路由组 | 路由模块 | 功能 ID / 课程章节 |
 |---|---|---|
-| 对话、运行、thread、分享和连接状态 | `chat_sessions`、`sessions`、`threads`、`runs`、`session_notifications`、`share`、`client_presence`、`events`、`stream_resume`、`suggestions` | `WAH-RUN-004–007/010`、`WAH-TOOL-006`、`WAH-API-002`、`WAH-OBS-002`；第 3–5、10、35、43 章 |
-| Agent、Goal、Plan、任务、协作、App、Workflow、Stage | `agents`、`goal`、`plans`、`tasks`、`collab`、`meetings`、`apps`、`apps_debug`、`stage_news`、`automation_scheduler` | `WAH-RUN-003`、`WAH-PLAN-001–011`、`WAH-AUTO-001–006`；第 3、22–30 章 |
-| 工具、后台进程、浏览器、CUA、宿主和 workspace | `tools`、`tool_approval_settings`、`background_bash`、`browser_bridge`、`browser_embed`、`browser_snapshots`、`browser_stream`、`cua_bridge`、`runtime_paths`、`workspaces`、`_tools_selftest` | `WAH-TOOL-001–004/010–011`、`WAH-EXEC-003–007`、`WAH-KNOW-006–007`；第 6–8、18、21、46 章 |
-| 知识、上传、记忆和用户资产 | `knowledge`、`knowledge_owned`、`uploads`、`memory`、`task_memory`、`assets`、`artifacts`、`items` | `WAH-KNOW-001–005/008`、`WAH-MEM-001–007`、`WAH-PLAN-011`；第 11–17、23、44 章 |
-| 媒体资产和设置 | `media_assets`、`media_settings` | `WAH-MEDIA-001`、`WAH-UI-005–006`；第 33、44、46 章 |
-| MCP、插件、技能、互操作和 UI 扩展 | `mcp`、`mcp_server`、`plugins`、`skills`、`a2a`、`ui_extensions` | `WAH-EXT-001–011`；第 31–34、44 章 |
-| HTTP/兼容协议和渠道 | `speech`、`openai_compat_apps`、`langgraph_proxy`、`channels` | `WAH-API-003–007/010`、`WAH-AUTO-005`；第 30、33、36–37、46 章 |
+| 对话、运行、thread、分享和连接状态 | `chat_sessions`、`sessions`、`threads`、`runs`、`session_notifications`、`share`、`client_presence`、`events`、`stream_resume`、`suggestions` | `WAH-RUN-004–007/010`、`WAH-TOOL-006`、`WAH-API-002`、`WAH-OBS-002`；第 4–6、12、51 章 |
+| Agent、Goal、Plan、任务、协作、App、Workflow、Stage | `agents`、`goal`、`plans`、`tasks`、`collab`、`meetings`、`apps`、`apps_debug`、`stage_news`、`automation_scheduler` | `WAH-RUN-003`、`WAH-PLAN-001–011`、`WAH-AUTO-001–006`；第 4、28–32、34–37 章 |
+| 工具、后台进程、浏览器、CUA、宿主和 workspace | `tools`、`tool_approval_settings`、`background_bash`、`browser_bridge`、`browser_embed`、`browser_snapshots`、`browser_stream`、`cua_bridge`、`runtime_paths`、`workspaces`、`_tools_selftest` | `WAH-TOOL-001–004/010–011`、`WAH-EXEC-003–007`、`WAH-KNOW-006–007`；第 8–10、22、25–26 章 |
+| 知识、上传、记忆和用户资产 | `knowledge`、`knowledge_owned`、`uploads`、`memory`、`task_memory`、`assets`、`artifacts`、`items` | `WAH-KNOW-001–005/008`、`WAH-MEM-001–007`、`WAH-PLAN-011`；第 14–17、19–20、29 章 |
+| 媒体资产和设置 | `media_assets`、`media_settings` | `WAH-MEDIA-001`、`WAH-UI-005–006`；第 41、56 章 |
+| MCP、插件、技能、互操作和 UI 扩展 | `mcp`、`mcp_server`、`plugins`、`skills`、`a2a`、`ui_extensions` | `WAH-EXT-001–012`；第 39–42、56 章 |
+| HTTP/兼容协议和渠道 | `speech`、`openai_compat_apps`、`langgraph_proxy`、`channels` | `WAH-API-003–007/010`、`WAH-AUTO-005`；第 45–46 章 |
 | 身份、配置、组织、License 和安全 | `auth`、`identity`、`organizations`、`license`、`platform`、`platform_config`、`custom_env_settings`、`panel_settings`、`security_settings`、`web_search_settings` | `WAH-GOV-001–007`、`WAH-RUN-001`、`WAH-UI-005`；第 2、38–40、44 章 |
 | Trace、错误、日志、用量、诊断和评估 | `client_trace`、`debug_agent_trace`、`debug_stream_paint`、`diagnostics`、`errors`、`hang_diagnostics`、`observability`、`eval`、`usage` | `WAH-OBS-001–007`、`WAH-UI-004/006`；第 10、41–44 章 |
 
@@ -147,7 +165,7 @@ system-logs.js, task-detail-workbench.js, task-detail.js, tasks.js, tools.js,
 ui-extension-shell.js, workflow.js
 ```
 
-此外还要检查 `evopanel/src/react/`、`components/`、`zcode-*`、`voice-overlay/`、路由表、boot 流程及 `src-tauri/`。页面文件逐一归到第 41–46 章和 `WAH-UI`/相关 API ID；有页面但没有后端调用、只在 Desktop 可用、由第三方模块提供、或仅供诊断的情况必须在功能清单注明。
+此外还要检查 `evopanel/src/react/`、`components/`、`zcode-*`、`voice-overlay/`、路由表、boot 流程及 `src-tauri/`。页面文件逐一归到第 51–57 章和 `WAH-UI`/相关 API ID；有页面但没有后端调用、只在 Desktop 可用、由第三方模块提供、或仅供诊断的情况必须在功能清单注明。
 
 客户端页面数量或打包脚本数量会变化；逐章从导航入口及后端 API 反向核对，发现新页面或发行模式时先补到对应功能 ID，再更新课程。Bench、debug、迁移、维护脚本等可能是开发工具而不是终端产品能力，需要记录分类结论。
 

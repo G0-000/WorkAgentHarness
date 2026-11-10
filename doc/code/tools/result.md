@@ -2,6 +2,7 @@
 
 > **源码路径**: `backend/packages/harness/workagentharness/tools/result.py`
 > **对应功能**: WAH-TOOL-002
+> **来源**: 命名自造；功能对应 EvoFlow 的 `tools/tool_result_shaper.py` + `tools/tool_output_truncation.py`（原版是多个模块、分字段整形），本项目合并成一个 `ToolResult`
 
 ## 顺序执行链
 

@@ -49,6 +49,15 @@ def load_chat_model_config(path: str | Path) -> ChatModelConfig:
     except TypeError as exc:
         raise ValueError(f"models.chat 配置字段无效: {exc}") from exc
 
+    # dataclass 不做运行时类型校验：YAML 里把字段写成数字/布尔也能构造成功，
+    # 因此类型关必须显式补在这里，保证"配置层只抛 ValueError"这条契约成立。
+    if not isinstance(config.provider, str):
+        raise ValueError("models.chat.provider 必须是字符串")
+    if not isinstance(config.model, str):
+        raise ValueError("models.chat.model 必须是字符串")
+    if isinstance(config.temperature, bool) or not isinstance(config.temperature, (int, float)):
+        raise ValueError("models.chat.temperature 必须是数字")
+
     if not config.provider.strip():
         raise ValueError("models.chat.provider 不能为空")
     if not config.model.strip():

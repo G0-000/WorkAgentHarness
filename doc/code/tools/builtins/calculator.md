@@ -2,6 +2,7 @@
 
 > **源码路径**: `backend/packages/harness/workagentharness/tools/builtins/calculator.py`
 > **对应功能**: WAH-TOOL-003（内置工具最小实现）
+> **来源**: 本项目自造。EvoFlow 无 calculator 工具（算术走 `builtins/code_execution_tool.py` 与 `host_direct/terminal_tool.py`），见 [台账 · 八](../../../dev/学习教程册/EvoFlow对照台账与差异建议.md)
 
 ## 顺序执行链
 

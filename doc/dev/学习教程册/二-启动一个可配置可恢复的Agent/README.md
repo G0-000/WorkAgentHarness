@@ -28,10 +28,10 @@ uv sync --project packages/harness
 uv run --project packages/harness workagentharness --once "你好"
 ```
 
-保存输出中的 thread id 后，可再次指定它检查同一 thread 的 checkpoint 恢复：
+保存输出中的 thread id 后，可再次指定它检查同一 thread 的 checkpoint 恢复（把 `<thread-id>` 换成上一步真实打印的十六进制串；**尖括号只是占位，不要连尖括号一起复制**，否则会被 shell 当成重定向）：
 
 ```bash
-uv run --project packages/harness workagentharness --thread <上一步的thread-id> --once "再发一条消息"
+uv run --project packages/harness workagentharness --thread <thread-id> --once "再发一条消息"
 ```
 
 用 stdio JSON-RPC 子集验证本地 App Server 入口：
@@ -48,10 +48,11 @@ App Server 当前只实现 `initialize`、`server/ping`、`turn/start` 三个学
 
 | 章节 | 独立教程 | 功能范围 |
 |---|---|---|
-| 第 2 章 | [配置、模型供应商与凭证](2. 配置模型供应商与凭证.md) | `WAH-RUN-001–002` |
-| 第 3 章 | [Agent 构建、角色与单轮执行](3. Agent构建角色与单轮执行.md) | `WAH-RUN-003–004` |
-| 第 4 章 | [消息、会话、Checkpoint、Run 与分享](4. 消息会话CheckpointRun与分享.md) | `WAH-RUN-005–006、WAH-RUN-010` |
-| 第 5 章 | [运行生命周期、取消和多进程入口](5. 运行生命周期取消和多进程入口.md) | `WAH-RUN-007–009、WAH-API-009` |
+| 第 3 章 | [配置、模型供应商与凭证](3. 配置模型供应商与凭证.md) | `WAH-RUN-001–002` |
+| 第 4 章 | [Agent 构建、角色与单轮执行](4. Agent构建角色与单轮执行.md) | `WAH-RUN-003–004` |
+| 第 5 章 | [消息、会话、Checkpoint、Run 与分享](5. 消息会话CheckpointRun与分享.md) | `WAH-RUN-005–006、WAH-RUN-010` |
+| 第 6 章 | [运行生命周期、取消和多进程入口](6. 运行生命周期取消和多进程入口.md) | `WAH-RUN-007–009、WAH-API-009` |
+| 第 7 章 | [第2篇综合测试与验收：配置到恢复全链路](7. 第2篇综合测试与验收：配置到恢复全链路.md) | 本篇集成结果 + 各章结果引用 |
 
 本篇当前验收状态见[篇 01 验收记录](验收记录.md)。
 
@@ -63,4 +64,5 @@ App Server 当前只实现 `initialize`、`server/ping`、`turn/start` 三个学
 - CLI 与 stdio App Server 至少各完成一次端到端调用；fake 和真实模型边界如实记录。
 - 能讲清入口、核心逻辑、状态存储、返回路径与失败处理。
 - 代码、记录和图使用同一 WorkAgentHarness commit。
-- 只有 `WAH-RUN-001–009`、`WAH-API-009`、`WAH-RUN-010` 的完整功能出口都通过后，才关闭本篇并开始下一篇；当前教程实现的是可运行基础，不把未实现的完整协议和边界包装成已完成。
+- 只有 `WAH-RUN-001–009`、`WAH-API-009` 的完整功能出口都通过后，才关闭本篇并开始下一篇；当前教程实现的是可运行基础，不把未实现的完整协议和边界包装成已完成。
+- `WAH-RUN-010`（分享生命周期）本意是**独立扩展**，状态停在"待盘点"：5.3 只定义行为与验收，代码、表、路由都不存在，**不作为本篇关闭条件**。
