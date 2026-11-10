@@ -56,6 +56,25 @@ App Server 当前只实现 `initialize`、`server/ping`、`turn/start` 三个学
 
 本篇当前验收状态见[篇 01 验收记录](验收记录.md)。
 
+## 篇-章-节目录
+
+| 章 | 节（独立文件） | 验收 |
+|---|---|---|
+| 3 | 3.1 配置契约和配置加载 / 3.2 凭证边界与密钥脱敏 / 3.3 模型工厂与 Fake 行为 | `test_ch03_config.py`（7 例） |
+| 4 | 4.1 Agent构造与角色提示 / 4.2 单轮执行与结果返回 | `test_ch04_agent.py`（4 例） |
+| 5 | 5.1 会话和业务消息存储 / 5.2 Checkpoint与Thread恢复 / 5.3 分享生命周期（未实现） | `test_ch05_persistence.py`（5 例；5.3 无测试） |
+| 6 | 6.1 Run生命周期和取消边界 / 6.2 CLI和stdio-App-Server | `test_ch06_lifecycle.py`（8 例） |
+| 7 | 7.1 单轮与恢复 / 7.2 参数与失败路径（分组，无节文件） | `test_ch07_part2_e2e.py`（4 例） |
+## 本篇测试
+
+| 项 | 内容 |
+|---|---|
+| 测试文件 | `test_ch03_config.py`(7)、`test_ch04_agent.py`(4)、`test_ch05_persistence.py`(5)、`test_ch06_lifecycle.py`(8)、`test_ch07_part2_e2e.py`(4) |
+| 用例数 | 28 |
+| 覆盖 | 3.1–3.3 配置与工厂、4.1–4.2 装配与 thread、5.1–5.2 三表与 checkpoint、6.1–6.2 状态机与 stdio、7.1–7.2 CLI 全链路 |
+| 不覆盖 | 5.3 分享生命周期（本仓未实现）；脱敏函数无独立断言（随 3.2 人工核对） |
+| 重跑 | `uv run --project packages/harness python tests/run_chapter_tests.py 3 4 5 6 7` |
+
 ## 本篇综合练习
 挑一个核心用户行为，从真实入口串联本篇已完成能力。先验证成功路径，再制造一个失败情景，观察持久化状态和用户反馈。手工调用内部函数不算端到端。
 
