@@ -7,7 +7,7 @@
 约定：
     - 只有"已学习且已实现"的章才有测试文件；
     - 第 1 章是理解验收（阅读 + 基线表），没有可执行断言，不生成测试；
-    - 第 14 章以后没有实现代码，一个测试文件都不应存在。
+    - 第 15 章以后没有实现代码，一个测试文件都不应存在。
 """
 
 from __future__ import annotations
@@ -33,6 +33,7 @@ CHAPTERS: dict[int, str | None] = {
     11: "tests.chapters.test_ch11_middleware",
     12: "tests.chapters.test_ch12_events",
     13: "tests.chapters.test_ch13_part3_e2e",
+    14: "tests.chapters.test_ch14_context",
 }
 
 
