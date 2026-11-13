@@ -30,8 +30,8 @@
 | 项 | 内容 |
 |---|---|
 | 测试文件 | `backend/tests/chapters/test_ch02_baseline.py` |
-| 用例数 | 2（`test_head_is_frozen_snapshot`、`test_worktree_clean`） |
-| 覆盖 | 第 2 章 2.1：EvoFlow HEAD = `8e462a37…`、工作区 0 行改动 |
+| 用例数 | 2（`test_frozen_snapshot_readable`、`test_worktree_clean`） |
+| 覆盖 | 第 2 章 2.1：冻结快照 `8e462a37` 与旧快照 `1e393d9` 均可检出、工作区 0 行改动（不断言 HEAD） |
 | 不覆盖 | 第 1 章为理解验收；2.2 的数量口径（71/77/33/969/52）目前人工读数，无自动化断言 |
 | 重跑 | `cd backend && uv run --project packages/harness python tests/run_chapter_tests.py 2` |
 
